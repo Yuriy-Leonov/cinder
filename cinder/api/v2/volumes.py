@@ -27,6 +27,7 @@ from cinder.api import xmlutil
 from cinder import exception
 from cinder.openstack.common import log as logging
 from cinder.openstack.common import uuidutils
+from cinder import qos_levels
 from cinder import utils
 from cinder import volume as cinder_volume
 from cinder.volume import volume_types
@@ -57,6 +58,7 @@ def make_volume(elem):
     elem.set('volume_type')
     elem.set('snapshot_id')
     elem.set('source_volid')
+    elem.set('required_qos')
 
     attachments = xmlutil.SubTemplateElement(elem, 'attachments')
     attachment = xmlutil.SubTemplateElement(attachments, 'attachment',
@@ -115,7 +117,7 @@ class CommonDeserializer(wsgi.MetadataXMLDeserializer):
         volume = {}
         volume_node = self.find_first_child_named(node, 'volume')
 
-        attributes = ['name', 'description', 'size',
+        attributes = ['name', 'description', 'size', 'required_qos',
                       'volume_type', 'availability_zone', 'imageRef',
                       'snapshot_id', 'source_volid']
         for attr in attributes:
@@ -375,6 +377,9 @@ class VolumeController(wsgi.Controller):
 
         kwargs['availability_zone'] = volume.get('availability_zone', None)
         kwargs['scheduler_hints'] = volume.get('scheduler_hints', None)
+
+        kwargs['required_qos'] = volume.get('required_qos', None)
+        qos_levels.check_valid_qos_level_for_volume(kwargs['required_qos'])
 
         new_volume = self.volume_api.create(context,
                                             size,

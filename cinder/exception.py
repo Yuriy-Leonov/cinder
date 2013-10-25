@@ -139,6 +139,10 @@ class InvalidSnapshot(Invalid):
     message = _("Invalid snapshot: %(reason)s")
 
 
+class InvalidRequiredQos(CinderException):
+    message = _("Invalid required qos for volume: %(reason)s")
+
+
 class InvalidVolumeAttachMode(Invalid):
     message = _("Invalid attaching mode '%(mode)s' for "
                 "volume %(volume_id)s.")

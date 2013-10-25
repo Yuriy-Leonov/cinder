@@ -524,7 +524,7 @@ class EntryCreateTask(base.CinderTask):
         self.db = db
         self.requires.update(['availability_zone', 'description', 'metadata',
                               'name', 'reservations', 'size', 'snapshot_id',
-                              'source_volid', 'volume_type_id',
+                              'source_volid', 'volume_type_id', 'required_qos',
                               'encryption_key_id'])
         self.provides.update(['volume_properties', 'volume_id'])
 
@@ -548,6 +548,7 @@ class EntryCreateTask(base.CinderTask):
             # Rename these to the internal name.
             'display_description': kwargs.pop('description'),
             'display_name': kwargs.pop('name'),
+            'required_qos' : kwargs.pop('required_qos')
         }
 
         # Merge in the other required arguments which should provide the rest

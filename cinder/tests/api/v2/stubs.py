@@ -30,6 +30,7 @@ def stub_volume(id, **kwargs):
         'project_id': 'fakeproject',
         'host': 'fakehost',
         'size': 1,
+        'required_qos': None,
         'availability_zone': 'fakeaz',
         'instance_uuid': 'fakeuuid',
         'attached_host': None,
@@ -66,6 +67,7 @@ def stub_volume_create(self, context, size, name, description, snapshot,
     vol['display_description'] = description
     vol['source_volid'] = None
     vol['bootable'] = False
+    vol['required_qos'] = 'bronze'
     try:
         vol['snapshot_id'] = snapshot['id']
     except (KeyError, TypeError):

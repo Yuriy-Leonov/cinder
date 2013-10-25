@@ -133,7 +133,7 @@ class API(base.Base):
 
     def create(self, context, size, name, description, snapshot=None,
                image_id=None, volume_type=None, metadata=None,
-               availability_zone=None, source_volume=None,
+               availability_zone=None, source_volume=None, required_qos=None,
                scheduler_hints=None, backup_source_volume=None):
 
         def check_volume_az_zone(availability_zone):
@@ -157,6 +157,7 @@ class API(base.Base):
             'scheduler_hints': scheduler_hints,
             'key_manager': self.key_manager,
             'backup_source_volume': backup_source_volume,
+            'required_qos': required_qos,
         }
         (flow, uuid) = create_volume.get_api_flow(self.scheduler_rpcapi,
                                                   self.volume_rpcapi,

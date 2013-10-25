@@ -131,6 +131,8 @@ class Volume(BASE, CinderBase):
     deleted = Column(Boolean, default=False)
     bootable = Column(Boolean, default=False)
 
+    required_qos = Column(String(255))
+
 
 class VolumeMetadata(BASE, CinderBase):
     """Represents a metadata key/value pair for a volume."""
