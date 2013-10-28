@@ -143,6 +143,10 @@ class NotAuthorized(CinderException):
     code = 403
 
 
+class InvalidRequiredQos(CinderException):
+    message = _("Invalid required qos for volume: %(reason)s")
+
+
 class AdminRequired(NotAuthorized):
     message = _("User does not have admin privileges")
 

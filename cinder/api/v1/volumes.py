@@ -25,6 +25,7 @@ from cinder import exception
 from cinder import flags
 from cinder.openstack.common import log as logging
 from cinder.openstack.common import uuidutils
+from cinder import qos_levels
 from cinder import utils
 from cinder import volume
 from cinder.volume import volume_types
@@ -119,6 +120,8 @@ def _translate_volume_summary_view(context, vol, image_id=None):
     else:
         d['bootable'] = 'false'
 
+    d['required_qos'] = vol['required_qos']
+
     return d
 
 
@@ -140,6 +143,7 @@ def make_volume(elem):
     elem.set('volume_type')
     elem.set('snapshot_id')
     elem.set('source_volid')
+    elem.set('required_qos')
 
     attachments = xmlutil.SubTemplateElement(elem, 'attachments')
     attachment = xmlutil.SubTemplateElement(attachments, 'attachment',
@@ -183,7 +187,7 @@ class CommonDeserializer(wsgi.MetadataXMLDeserializer):
         volume_node = self.find_first_child_named(node, 'volume')
 
         attributes = ['display_name', 'display_description', 'size',
-                      'volume_type', 'availability_zone']
+                      'volume_type', 'availability_zone', 'required_qos']
         for attr in attributes:
             if volume_node.getAttribute(attr):
                 volume[attr] = volume_node.getAttribute(attr)
@@ -352,6 +356,9 @@ class VolumeController(wsgi.Controller):
                 kwargs['image_id'] = image_uuid
 
         kwargs['availability_zone'] = volume.get('availability_zone', None)
+
+        kwargs['required_qos'] = volume.get('required_qos', None)
+        qos_levels.check_valid_qos_level_for_volume(kwargs['required_qos'])
 
         new_volume = self.volume_api.create(context,
                                             size,

@@ -87,7 +87,7 @@ class API(base.Base):
 
     def create(self, context, size, name, description, snapshot=None,
                image_id=None, volume_type=None, metadata=None,
-               availability_zone=None, source_volume=None):
+               availability_zone=None, source_volume=None, required_qos=None):
 
         if ((snapshot is not None) and (source_volume is not None)):
             msg = (_("May specify either snapshot, "
@@ -194,6 +194,7 @@ class API(base.Base):
                    'display_description': description,
                    'volume_type_id': volume_type_id,
                    'metadata': metadata,
+                   'required_qos': required_qos,
                    'source_volid': source_volid}
 
         try:

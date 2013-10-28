@@ -18,6 +18,7 @@
 import datetime
 
 from cinder import exception as exc
+from cinder import qos_levels
 
 FAKE_UUID = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
 FAKE_UUIDS = {}
@@ -30,6 +31,7 @@ def stub_volume(id, **kwargs):
         'project_id': 'fakeproject',
         'host': 'fakehost',
         'size': 1,
+        'required_qos': qos_levels.BRONZE,
         'availability_zone': 'fakeaz',
         'instance_uuid': 'fakeuuid',
         'mountpoint': '/',
@@ -57,6 +59,11 @@ def stub_volume_create(self, context, size, name, description, snapshot,
     vol['display_name'] = name
     vol['display_description'] = description
     vol['source_volid'] = None
+    required_qos = param.get('required_qos', None)
+    if not required_qos:
+        required_qos = qos_levels.BRONZE
+    qos_levels.check_valid_qos_level_for_volume(required_qos)
+    vol['required_qos'] = required_qos
     try:
         vol['snapshot_id'] = snapshot['id']
     except (KeyError, TypeError):

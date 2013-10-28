@@ -133,6 +133,7 @@ class Volume(BASE, CinderBase):
     ec2_id = Column(Integer)
     user_id = Column(String(255))
     project_id = Column(String(255))
+    required_qos = Column(String(255))
 
     snapshot_id = Column(String(36))
 

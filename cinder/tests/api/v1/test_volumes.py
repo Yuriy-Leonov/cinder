@@ -25,6 +25,7 @@ from cinder import db
 from cinder import exception
 from cinder import flags
 from cinder import test
+from cinder import qos_levels
 from cinder.tests.api import fakes
 from cinder.tests.api.v2 import stubs
 from cinder.tests.image import fake as fake_image
@@ -88,10 +89,24 @@ class VolumeApiTest(test.TestCase):
                                'source_volid': None,
                                'metadata': {},
                                'id': '1',
+                               'required_qos': qos_levels.BRONZE,
                                'created_at': datetime.datetime(1, 1, 1,
                                                                1, 1, 1),
                                'size': 100}}
         self.assertEqual(res_dict, expected)
+
+    def test_volume_create_with_wrong_required_qos(self):
+        self.stubs.Set(volume_api.API, "create", stubs.stub_volume_create)
+
+        vol = {"size": 100,
+               "display_name": "Volume Test Name",
+               "display_description": "Volume Test Desc",
+               "availability_zone": "zone1:host1",
+               'required_qos': 'wrong_required_qos'}
+        body = {"volume": vol}
+        req = fakes.HTTPRequest.blank('/v1/volumes')
+        self.assertRaises(exception.InvalidRequiredQos, self.controller.create,
+                          req, body)
 
     def test_volume_create_with_type(self):
         vol_type = FLAGS.default_volume_type
@@ -147,6 +162,7 @@ class VolumeApiTest(test.TestCase):
                                'source_volid': None,
                                'metadata': {},
                                'id': '1',
+                               'required_qos': qos_levels.BRONZE,
                                'created_at': datetime.datetime(1, 1, 1,
                                                                1, 1, 1),
                                'size': '1'}}
@@ -228,6 +244,7 @@ class VolumeApiTest(test.TestCase):
             'source_volid': None,
             'metadata': {},
             'id': '1',
+            'required_qos': qos_levels.BRONZE,
             'created_at': datetime.datetime(1, 1, 1, 1, 1, 1),
             'size': 1,
         }}
@@ -258,6 +275,7 @@ class VolumeApiTest(test.TestCase):
             'source_volid': None,
             'metadata': {"qos_max_iops": 2000},
             'id': '1',
+            'required_qos': qos_levels.BRONZE,
             'created_at': datetime.datetime(1, 1, 1, 1, 1, 1),
             'size': 1,
         }}
@@ -308,6 +326,7 @@ class VolumeApiTest(test.TestCase):
                                  'source_volid': None,
                                  'metadata': {},
                                  'id': '1',
+                                 'required_qos': qos_levels.BRONZE,
                                  'created_at': datetime.datetime(1, 1, 1,
                                                                  1, 1, 1),
                                  'size': 1}]}
@@ -332,6 +351,7 @@ class VolumeApiTest(test.TestCase):
                                  'source_volid': None,
                                  'metadata': {},
                                  'id': '1',
+                                 'required_qos': qos_levels.BRONZE,
                                  'created_at': datetime.datetime(1, 1, 1,
                                                                  1, 1, 1),
                                  'size': 1}]}
@@ -417,6 +437,7 @@ class VolumeApiTest(test.TestCase):
                                'source_volid': None,
                                'metadata': {},
                                'id': '1',
+                               'required_qos': qos_levels.BRONZE,
                                'created_at': datetime.datetime(1, 1, 1,
                                                                1, 1, 1),
                                'size': 1}}
@@ -441,6 +462,7 @@ class VolumeApiTest(test.TestCase):
                                'source_volid': None,
                                'metadata': {},
                                'id': '1',
+                               'required_qos': qos_levels.BRONZE,
                                'created_at': datetime.datetime(1, 1, 1,
                                                                1, 1, 1),
                                'size': 1}}
@@ -469,6 +491,7 @@ class VolumeApiTest(test.TestCase):
                                'source_volid': None,
                                'metadata': {},
                                'id': '1',
+                               'required_qos': qos_levels.BRONZE,
                                'created_at': datetime.datetime(1, 1, 1,
                                                                1, 1, 1),
                                'size': 1}}
