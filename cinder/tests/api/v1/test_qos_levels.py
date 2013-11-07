@@ -48,4 +48,3 @@ class QosLevelsTest(test.TestCase):
     def test_qos_levels_for_get_end_of_levels(self):
         next_qos_lvl = qos_levels.get_next_qos_level(qos_levels.PLATINUM)
         self.assertEqual(None, next_qos_lvl)
-

@@ -30,6 +30,7 @@ from cinder import exception
 from cinder.image import image_utils
 from cinder.openstack.common import log as logging
 from cinder import utils
+from cinder import qos_levels
 
 LOG = logging.getLogger(__name__)
 
@@ -55,6 +56,9 @@ volume_opts = [
     cfg.IntOpt('iscsi_port',
                default=3260,
                help='The port that the iSCSI daemon is listening on'),
+    cfg.StrOpt('qos',
+               default=qos_levels.BRONZE,
+               help='Quality of Service Level'),
     cfg.StrOpt('volume_backend_name',
                default=None,
                help='The backend name for a given driver implementation'), ]
@@ -474,6 +478,7 @@ class ISCSIDriver(VolumeDriver):
         data['free_capacity_gb'] = 'infinite'
         data['reserved_percentage'] = 100
         data['QoS_support'] = False
+        data['qos'] = CONF.qos
         self._stats = data
 
 

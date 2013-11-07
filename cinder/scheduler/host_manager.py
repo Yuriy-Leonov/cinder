@@ -125,6 +125,7 @@ class HostState(object):
             self.driver_version = capability.get('driver_version', None)
             self.storage_protocol = capability.get('storage_protocol', None)
             self.QoS_support = capability.get('QoS_support', False)
+            self.qos = capability.get('qos', None)
 
             self.total_capacity_gb = capability['total_capacity_gb']
             self.free_capacity_gb = capability['free_capacity_gb']
